@@ -4,8 +4,9 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { IconMicrophone } from "@tabler/icons-react";
 
-const SpeechRecognitonComponent = ({ setSourceText }) => {
-  const { transcript, listening } = useSpeechRecognition();
+const SpeechRecognitionComponent = ({ setSourceText }) => {
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
   useEffect(() => {
     setSourceText(transcript);
   }, [transcript, setSourceText]);
@@ -13,8 +14,10 @@ const SpeechRecognitonComponent = ({ setSourceText }) => {
   const handleVoiceRecording = () => {
     if (listening) {
       SpeechRecognition.stopListening();
+      console.log("stopped listeninggg");
     } else {
       SpeechRecognition.startListening();
+      console.log(" listeninggg");
     }
   };
 
@@ -29,4 +32,4 @@ const SpeechRecognitonComponent = ({ setSourceText }) => {
   );
 };
 
-export default SpeechRecognitonComponent;
+export default SpeechRecognitionComponent;

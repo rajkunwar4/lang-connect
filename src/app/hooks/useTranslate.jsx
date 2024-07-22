@@ -11,7 +11,7 @@ const openai = new OpenAI({
 
 const API_KEY = "AIzaSyCHETe5VmgLahSNFjxMCa6w7z5a7_tI07Q";
 
-const genAI = new GoogleGenerativeAI(API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -48,8 +48,8 @@ const useTranslate = (sourceText, selectedLanguage) => {
         const prompt = `You will be provided with a sentence. This sentence: ${sourceText}.
           Your tasks are to:
           - detect which language the sentence is written in
-          - translate the sentence into the ${selectedLanguage}
-          donot return anything other than the translated sentence
+          - translate the sentence into the '${selectedLanguage}'
+          donot return anything other than the translated sentence/word/input.
            `;
         const result = await model.generateContent(prompt);
         const response = result.response;

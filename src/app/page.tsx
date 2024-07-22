@@ -20,6 +20,7 @@ import useTranslate from "@/app/hooks/useTranslate";
 import LanguageSelector from "@/app/components/Inputs/LanguageSelector";
 import { space } from "postcss/lib/list";
 import { Span } from "next/dist/trace";
+import SvgDecorations from "./components/SvgDecorations";
 
 export default function Home() {
   const [sourceText, setSourceText] = useState<string>("");
@@ -35,11 +36,14 @@ export default function Home() {
   ]);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("Spanish");
   const targetText = useTranslate(sourceText, selectedLanguage);
+
+  //tts: text to audio
   const handleAudioPlayback = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
   };
 
+  //handle file upload
   const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -52,8 +56,10 @@ export default function Home() {
     }
   };
 
+  //handle paste
   const handleLinkPaste = (text: string) => {};
 
+  //copy to clipboard
   const handleCopyToClipboard = () => {
     window.navigator.clipboard.writeText(targetText);
     setCopied(true);
@@ -62,7 +68,12 @@ export default function Home() {
     }, 3000);
   };
 
+  //handleFavorites
   const handleFavorite = () => {
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
     setFavorite(!favorite);
   };
 
@@ -82,7 +93,7 @@ export default function Home() {
 
               <div className="mt-7 sm:mt-12 mx-auto max-w-3xl relative ">
                 <div className="grid gap-4 md:grid-cols-2 grid-cols-1">
-                  <div className="relative z-10 flex flex-col space-x-3 border rounded-lg shadow-lg bg-neutral-900 border-neutral-700 shadow-gray-900/20">
+                  <div className="relative z-10 flex flex-col space-x-3 border p-3 rounded-lg shadow-lg bg-neutral-900 border-neutral-700 shadow-gray-900/20">
                     {" "}
                     {/* From textarea  */}
                     <TextArea
@@ -116,9 +127,9 @@ export default function Home() {
                   </div>
 
                   {/* second part */}
-                  <div className="relative z-10 flex flex-col space-x-3 border rounded-lg shadow-lg bg-neutral-900 border-neutral-700 shadow-gray-900/20">
+                  <div className="relative z-10 flex flex-col space-x-3 p-3 border rounded-lg shadow-lg bg-neutral-900 border-neutral-700 shadow-gray-900/20">
                     {" "}
-                    {/* From textarea  */}
+                    {/* To textarea  */}
                     <TextArea
                       placeholder={"Target Language"}
                       id={"target-language"}
@@ -151,13 +162,14 @@ export default function Home() {
                         <IconThumbDown size={22} />
                         <IconStar
                           size={22}
-                          onClick={() => {}}
+                          onClick={handleFavorite}
                           className={`${favorite ? "text-yellow-400" : ""}`}
                         />
                       </div>
                     </div>
                   </div>
                 </div>
+                <SvgDecorations />
               </div>
             </div>
           </div>
