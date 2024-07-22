@@ -5,6 +5,7 @@ import TextArea from "@/app/components/Inputs/TextArea.jsx";
 import { ChangeEvent, useState } from "react";
 import SpeechRecognitonComponent from "@/app/components/SpeechRecogniton/SpeechRecogniton.jsx";
 import { IconFileUpload, IconVolume } from "@tabler/icons-react";
+import FileUpload from "@/app/components/Inputs/FileUpload.jsx";
 
 export default function Home() {
   const [sourceText, setSourceText] = useState<string>("");
@@ -12,6 +13,8 @@ export default function Home() {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
   };
+
+  const handleFileUpload = () => {};
 
   return (
     <div>
@@ -52,6 +55,7 @@ export default function Home() {
                             handleAudioPlayback(sourceText);
                           }}
                         />
+                        <FileUpload handleFileUpload={handleFileUpload} />
                         {/* file upload comp */}
                       </span>
                     </div>
