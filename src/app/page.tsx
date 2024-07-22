@@ -4,17 +4,67 @@ import Image from "next/image";
 import TextArea from "@/app/components/Inputs/TextArea.jsx";
 import { ChangeEvent, useState } from "react";
 import SpeechRecognitonComponent from "@/app/components/SpeechRecogniton/SpeechRecogniton.jsx";
-import { IconFileUpload, IconVolume } from "@tabler/icons-react";
+import {
+  IconCopy,
+  IconFileUpload,
+  IconStar,
+  IconThumbDown,
+  IconThumbUp,
+  IconVolume,
+} from "@tabler/icons-react";
 import FileUpload from "@/app/components/Inputs/FileUpload.jsx";
+import { rtfToText } from "@/app/utils/rtfToText";
+import LinkPaste from "@/app/components/Inputs/LinkPaste";
+import Link from "next/link";
+import useTranslate from "@/app/hooks/useTranslate";
+import LanguageSelector from "@/app/components/Inputs/LanguageSelector";
+import { space } from "postcss/lib/list";
+import { Span } from "next/dist/trace";
 
 export default function Home() {
   const [sourceText, setSourceText] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
+  const [favorite, setFavorite] = useState<boolean>(false);
+  const [languages] = useState([
+    "English",
+    "French",
+    "Spanish",
+    "German",
+    "Hindi",
+    "Chinese",
+  ]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("Spanish");
+  const targetText = useTranslate(sourceText, selectedLanguage);
   const handleAudioPlayback = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
   };
 
-  const handleFileUpload = () => {};
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rtfContent = reader.result as string;
+        const text = rtfToText(rtfContent);
+        setSourceText(text);
+      };
+    }
+  };
+
+  const handleLinkPaste = (text: string) => {};
+
+  const handleCopyToClipboard = () => {
+    window.navigator.clipboard.writeText(targetText);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  };
+
+  const handleFavorite = () => {
+    setFavorite(!favorite);
+  };
 
   return (
     <div>
@@ -44,8 +94,8 @@ export default function Home() {
                       }}
                     />
                     {/* icons and attachments */}
-                    <div className="flex flex-row justify-between w-full">
-                      <span className="curosor-pointer flex space-x-2 flex-row">
+                    <div className="flex flex-row justify-between w-full ">
+                      <span className="curosor-pointer flex space-x-2 flex-row ">
                         <SpeechRecognitonComponent
                           setSourceText={setSourceText}
                         />
@@ -57,7 +107,54 @@ export default function Home() {
                         />
                         <FileUpload handleFileUpload={handleFileUpload} />
                         {/* file upload comp */}
+                        <LinkPaste handleLinkPaste={handleLinkPaste} />
+                        <span className="text-sm pr-4">
+                          {sourceText.length}/1000
+                        </span>
                       </span>
+                    </div>
+                  </div>
+
+                  {/* second part */}
+                  <div className="relative z-10 flex flex-col space-x-3 border rounded-lg shadow-lg bg-neutral-900 border-neutral-700 shadow-gray-900/20">
+                    {" "}
+                    {/* From textarea  */}
+                    <TextArea
+                      placeholder={"Target Language"}
+                      id={"target-language"}
+                      value={targetText}
+                      onChange={() => {}}
+                    />
+                    {/* icons and attachments */}
+                    <div className="flex flex-row justify-between w-full">
+                      <span className="cursor-pointer flex space-x-2 flex-row items-center ">
+                        <LanguageSelector
+                          selectedLanguage={selectedLanguage}
+                          setSelectedLanguage={setSelectedLanguage}
+                          languages={languages}
+                        />
+                        <IconVolume
+                          size={22}
+                          onClick={() => {
+                            handleAudioPlayback(targetText);
+                          }}
+                        />
+                      </span>
+                      <div className="flex flex-row items-center space-x-2 pr-4">
+                        <IconCopy size={22} onClick={handleCopyToClipboard} />
+                        {copied && (
+                          <span className="text-xs text-green-500">
+                            Copied!
+                          </span>
+                        )}
+                        <IconThumbUp size={22} />
+                        <IconThumbDown size={22} />
+                        <IconStar
+                          size={22}
+                          onClick={() => {}}
+                          className={`${favorite ? "text-yellow-400" : ""}`}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
