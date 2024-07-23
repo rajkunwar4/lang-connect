@@ -65,7 +65,7 @@ const useTranslate = (sourceText, selectedLanguage) => {
     if (sourceText.trim()) {
       const timeout = setTimeout(() => {
         handleTranslate(sourceText);
-      }, 1000);
+      }, 300);
       return () => clearTimeout(timeout);
     }
   }, [sourceText, selectedLanguage]);
