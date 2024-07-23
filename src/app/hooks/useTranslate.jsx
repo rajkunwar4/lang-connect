@@ -16,7 +16,7 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 /* 
-  Made using OpenAI api
+  OpenAI api
 const handleTranslate1 = async (sourceText) => {
   try {
     const response = await openai.chat.completions.create({
